@@ -5,6 +5,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import taxi.exception.AuthenticationException;
 import taxi.lib.Injector;
 import taxi.model.Driver;
 import taxi.service.DriverService;
@@ -21,10 +23,16 @@ public class AddDriverController extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException, ServletException {
+        String login = req.getParameter("login");
+        if (driverService.findByLogin(login).isPresent()) {
+            req.setAttribute("errorMsg", "User already exists.");
+            req.getRequestDispatcher("/WEB-INF/views/drivers/add.jsp").forward(req, resp);
+            return;
+        }
         String name = req.getParameter("name");
         String licenseNumber = req.getParameter("license_number");
-        String login = req.getParameter("login");
         String password = req.getParameter("password");
         Driver driver = new Driver(name, licenseNumber, login, password);
         driverService.create(driver);
