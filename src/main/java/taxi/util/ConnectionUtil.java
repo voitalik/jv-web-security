@@ -12,7 +12,7 @@ public class ConnectionUtil {
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     static {
-        try {//
+        try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Can't find SQL Driver", e);
